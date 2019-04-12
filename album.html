@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        body,ul,li{padding:0;margin: 0}
+        body *{
+            transition: all 1s;
+            transition-timing-function: cubic-bezier(0.57, 0.46, 0, 0.98);
+        }
+        ul,li{list-style: none;}
+        .item .image{
+            width:180px;
+            height: 180px;
+            transform: rotateX(0deg) translateZ(40px);
+            margin-top: -100px;
+            
+        }
+        #album{
+            width:300px;
+            height: 420px;
+            margin:0 auto;
+            overflow: hidden;
+        }
+        #album .bg{
+            width: 100%;
+            height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 400px;
+            transform-style: preserve-3d;
+        }
+        #album .bg .out{
+            transform: rotateX(-60deg) translateZ(40px) ;
+            margin-top: 50px;
+        }
+        #album .bg .in{
+            transform: rotateX(60deg) translateZ(40px);
+            margin-top: 150px;
+        }
+        #list{
+            transform: translate3d(0,0,0);
+        }
+    </style>
+    <title>Album</title>
+</head>
+<body>
+    <div id="album">
+        <ul id="list">
+            <li class="item">
+                <div class="bg" style="background-color: indianred">
+                    <img class='image' src="./image/p1.jpeg" alt="">
+                </div>
+            </li>
+            <li class="item">
+                <div class="bg" style="background-color: darkslategray">
+                    <img class='image in' src="./image/p3.jpeg" alt="">
+                </div>
+            </li>
+            <li class="item">
+                <div class="bg" style="background-color: dimgray">
+                    <img class='image in' src="./image/p2.jpeg" alt="">
+                </div>
+            </li>
+            <li class="item">
+                <div class="bg" style="background-color: teal">
+                    <img class='image in' src="./image/p4.jpeg" alt="">
+                </div>
+            </li>
+        </ul>
+    </div>
+    <button id="lastBtn">last</button>
+    <button id="nextBtn">next</button>
+    <script>
+        let list = document.getElementById('list'),
+            nextBtn = document.getElementById('nextBtn'),
+            lastBtn = document.getElementById('lastBtn'),
+            count = 0,
+            isMoving = false
+        nextBtn.addEventListener('click',function(){
+            if(isMoving){
+                return
+            }
+            isMoving = true
+            let images = list.querySelectorAll('.item .bg .image')
+            let index  = 0;
+            images[index].classList.add('out')
+            images[index+1].classList.remove('in')
+            count++;
+            list.style.transition = "all 1s";
+            list.style.transform = `translate3d(0,-420px,0)`
+            setTimeout(()=>{
+                list.style.transition = "none";
+                f1 = list.querySelectorAll('.item')[0];
+                list.appendChild(f1);
+                f1.querySelector('.image').classList.replace('out','in')
+                list.style.transform = `translate3d(0,0,0)`
+                isMoving = false
+            },1000)
+        })
+        lastBtn.addEventListener('click',function(){
+            let index = count % 4;
+            images[index].classList.add('in')
+            images[index-1].classList.remove('out')
+            count--;
+            list.style.transform = `translate3d(0,-${count*420}px,0)`
+        })
+    </script>
+</body>
+</html>
