@@ -11,6 +11,7 @@
             transition-timing-function: cubic-bezier(0.57, 0.46, 0, 0.98);
         }
         ul,li{list-style: none;}
+        .item{position: relative;}
         .item .image{
             width:180px;
             height: 180px;
@@ -33,16 +34,37 @@
             perspective: 400px;
             transform-style: preserve-3d;
         }
-        #album .bg .out{
+        #album .item.out .image{
             transform: rotateX(-60deg) translateZ(40px) ;
             margin-top: 50px;
         }
-        #album .bg .in{
+        #album .item.in .image{
             transform: rotateX(60deg) translateZ(40px);
             margin-top: 150px;
         }
         #list{
             transform: translate3d(0,0,0);
+        }
+        .info{
+            position: absolute;
+            width: 100%;
+            left: 50px;
+            top: 270px;
+            font-size: 0.75rem;
+            color: #fff;
+            font-weight: 100;
+            opacity: 1;
+            transform: scale(1)
+        }
+        .in .info{
+            left:350px;
+            opacity: 0;
+            transform: (0.8);
+        }
+        .out .info{
+            left:-300px;
+            opacity: 0;
+            transform: scale(0.8)
         }
     </style>
     <title>Album</title>
@@ -54,20 +76,48 @@
                 <div class="bg" style="background-color: indianred">
                     <img class='image' src="./image/p1.jpeg" alt="">
                 </div>
+                <div class="info">
+                    <p>Some text to leave..</p>
+                    <div>
+                        <span class="fav"></span>
+                        <span class="play"></span>
+                    </div>
+                </div>
             </li>
-            <li class="item">
+            <li class="item in">
                 <div class="bg" style="background-color: darkslategray">
-                    <img class='image in' src="./image/p3.jpeg" alt="">
+                    <img class='image' src="./image/p3.jpeg" alt="">
+                </div>
+                <div class="info">
+                    <p>Some text to leave..</p>
+                    <div>
+                        <span class="fav"></span>
+                        <span class="play"></span>
+                    </div>
                 </div>
             </li>
-            <li class="item">
+            <li class="item in">
                 <div class="bg" style="background-color: dimgray">
-                    <img class='image in' src="./image/p2.jpeg" alt="">
+                    <img class='image' src="./image/p2.jpeg" alt="">
+                </div>
+                <div class="info">
+                    <p>Some text to leave..</p>
+                    <div>
+                        <span class="fav"></span>
+                        <span class="play"></span>
+                    </div>
                 </div>
             </li>
-            <li class="item">
+            <li class="item in">
                 <div class="bg" style="background-color: teal">
-                    <img class='image in' src="./image/p4.jpeg" alt="">
+                    <img class='image' src="./image/p4.jpeg" alt="">
+                </div>
+                <div class="info">
+                    <p>Some text to leave..</p>
+                    <div>
+                        <span class="fav"></span>
+                        <span class="play"></span>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -85,10 +135,10 @@
                 return
             }
             isMoving = true
-            let images = list.querySelectorAll('.item .bg .image')
+            let items = list.querySelectorAll('.item')
             let index  = 0;
-            images[index].classList.add('out')
-            images[index+1].classList.remove('in')
+            items[index].classList.add('out')
+            items[index+1].classList.remove('in')
             count++;
             list.style.transition = "all 1s";
             list.style.transform = `translate3d(0,-420px,0)`
@@ -96,17 +146,32 @@
                 list.style.transition = "none";
                 f1 = list.querySelectorAll('.item')[0];
                 list.appendChild(f1);
-                f1.querySelector('.image').classList.replace('out','in')
+                f1.classList.replace('out','in')
                 list.style.transform = `translate3d(0,0,0)`
                 isMoving = false
             },1000)
         })
         lastBtn.addEventListener('click',function(){
-            let index = count % 4;
-            images[index].classList.add('in')
-            images[index-1].classList.remove('out')
-            count--;
-            list.style.transform = `translate3d(0,-${count*420}px,0)`
+            if(isMoving){
+                return
+            }
+            isMoving = true
+            list.style.transition = "none";
+            list.style.transform = `translate3d(0,-420px,0)`;
+            let items = list.querySelectorAll('.item');
+            last = items[items.length-1];
+            list.insertBefore(last,items[0]);
+            last.classList.replace('in','out')
+            setTimeout(()=>{
+                items = list.querySelectorAll('.item');
+                items[0].classList.remove('out')
+                items[1].classList.add('in');
+                list.style.transition = "all 1s";
+                list.style.transform = `translate3d(0,0,0)`;
+                setTimeout(()=>{
+                    isMoving = false
+                },1000)
+            },10);
         })
     </script>
 </body>
